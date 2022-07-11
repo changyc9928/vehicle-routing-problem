@@ -16,6 +16,7 @@ pub struct Train {
     route: HashMap<String, Option<String>>,
     time: u64,
     history: Vec<History>,
+    end_trip: bool,
 }
 
 impl Debug for Train {
@@ -56,6 +57,7 @@ impl Train {
             route: HashMap::new(),
             time: 0,
             history: vec![],
+            end_trip: false,
         }
     }
 
@@ -135,6 +137,10 @@ impl Train {
                 let len = self.history.len();
                 let mut package_to_be_unload: Vec<Arc<Mutex<Package>>> = vec![];
                 let cur_node_name = current_node.lock().unwrap().get_name();
+                let mut reach_critical_node = false;
+                if time == 0 {
+                    reach_critical_node = true;
+                }
                 for package in self.package.values() {
                     let end_node_name = package
                         .lock()
@@ -155,6 +161,7 @@ impl Train {
                     current_node.lock().unwrap().add_pick_up_package(p.clone());
                     p.lock().unwrap().arrive();
                     drop_package_name.push(pkg_name);
+                    reach_critical_node = true;
                 }
                 if len >= 2 {
                     self.history[len - 2]
@@ -173,9 +180,12 @@ impl Train {
                         self.load += weight;
                         new_package_name.push(p.lock().unwrap().get_name());
                     }
+                    reach_critical_node = true;
                 }
                 self.history[len - 1].register_departure(cur_node_name, new_package_name);
-                self.find_new_target();
+                if reach_critical_node {
+                    self.find_new_target();
+                }
                 current_node.clone()
             }
         };
@@ -200,15 +210,20 @@ impl Train {
             );
         } else {
             self.history.remove(self.history.len() - 1);
+            self.end_trip = true;
         }
     }
 
     pub fn get_history(&self) -> Vec<History> {
         self.history.clone()
     }
+
+    pub fn is_not_end(&self) -> bool {
+        self.end_trip
+    }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct History {
     w: u64,
     t: String,
