@@ -209,8 +209,8 @@ impl Network {
         while !self.has_all_package_delivered() {
             for t in self.train.values() {
                 t.lock().unwrap().deliver(self.time);
-                self.time += 1;
             }
+            self.time += 1;
             // println!("{:#?}", self);
         }
     }
