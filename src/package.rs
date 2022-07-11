@@ -33,12 +33,14 @@ impl PartialEq for Package {
 
 impl Package {
     pub fn new(name: String, weight: u64, start: Arc<Mutex<Node>>, end: Arc<Mutex<Node>>) -> Self {
+        let start_name = start.lock().unwrap().get_name();
+        let end_name = end.lock().unwrap().get_name();
         Self {
             name,
             weight,
             start,
             end,
-            arrived: false,
+            arrived: start_name == end_name,
         }
     }
 

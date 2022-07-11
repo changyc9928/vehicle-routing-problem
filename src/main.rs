@@ -126,6 +126,7 @@ fn main() {
         "K3,9,R,J",
         "K4,15,H,Q",
         "K5,10,K,H",
+        "K6,3,F,F",
     ]
     .into_iter()
     .map(|x| x.to_string())
