@@ -66,20 +66,74 @@ fn create_network(
     network
 }
 
+// fn main() {
+//     let station = vec!["A", "B", "C"]
+//         .into_iter()
+//         .map(|x| x.to_string())
+//         .collect();
+//     let edge = vec!["E1,A,B,30", "E2,B,C,10"]
+//         .into_iter()
+//         .map(|x| x.to_string())
+//         .collect();
+//     let deliveries = vec!["K1,5,A,C"]
+//         .into_iter()
+//         .map(|x| x.to_string())
+//         .collect();
+//     let train = vec!["Q1,6,B"].into_iter().map(|x| x.to_string()).collect();
+//     let mut network = create_network(station, edge, train, deliveries);
+//     network.calculate_shortest_distance_between_packages();
+//     network.simulate();
+//     network.print_history();
+// }
+
 fn main() {
-    let station = vec!["A", "B", "C"]
+    let station = vec![
+        "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R",
+    ]
+    .into_iter()
+    .map(|x| x.to_string())
+    .collect();
+    let edge = vec![
+        "E1,A,B,5",
+        "E2,A,C,7",
+        "E3,A,D,11",
+        "E4,A,E,17",
+        "E5,E,F,7",
+        "E6,F,G,6",
+        "E7,G,H,3",
+        "E8,H,I,1",
+        "E9,I,J,1",
+        "E10,E,J,10",
+        "E11,J,L,9",
+        "E12,J,K,12",
+        "E13,L,M,8",
+        "E14,L,N,10",
+        "E15,K,M,4",
+        "E16,N,O,13",
+        "E17,P,O,15",
+        "E18,E,P,9",
+        "E19,O,Q,20",
+        "E20,Q,R,22",
+        "E20,M,N,10",
+        "E21,H,L,15",
+    ]
+    .into_iter()
+    .map(|x| x.to_string())
+    .collect();
+    let deliveries = vec![
+        "K1,5,C,H",
+        "K2,16,D,M",
+        "K3,9,R,J",
+        "K4,15,H,Q",
+        "K5,10,K,H",
+    ]
+    .into_iter()
+    .map(|x| x.to_string())
+    .collect();
+    let train = vec!["Q1,6,B", "Q2,20,Q", "Q3,15,J"]
         .into_iter()
         .map(|x| x.to_string())
         .collect();
-    let edge = vec!["E1,A,B,30", "E2,B,C,10"]
-        .into_iter()
-        .map(|x| x.to_string())
-        .collect();
-    let deliveries = vec!["K1,5,A,C"]
-        .into_iter()
-        .map(|x| x.to_string())
-        .collect();
-    let train = vec!["Q1,6,B"].into_iter().map(|x| x.to_string()).collect();
     let mut network = create_network(station, edge, train, deliveries);
     network.calculate_shortest_distance_between_packages();
     network.simulate();
