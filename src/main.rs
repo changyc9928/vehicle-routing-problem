@@ -258,6 +258,32 @@ fn create_network(
 //     network.print_history();
 // }
 
+// fn main() {
+//     let station = vec!["A", "B", "C", "D", "E", "F"]
+//         .into_iter()
+//         .map(|x| x.to_string())
+//         .collect();
+//     let edge = vec![
+//         "E1,A,B,7", "E2,E,F,7", "E3,B,E,4", "E4,C,D,7", "E5,B,C,7", "E6,B,D,5", "E7,C,E,7",
+//         "E8,E,D,7",
+//     ]
+//     .into_iter()
+//     .map(|x| x.to_string())
+//     .collect();
+//     let deliveries = vec!["K1,5,E,A", "K2,5,B,F"]
+//         .into_iter()
+//         .map(|x| x.to_string())
+//         .collect();
+//     let train = vec!["Q1,20,A", "Q2,20,F"]
+//         .into_iter()
+//         .map(|x| x.to_string())
+//         .collect();
+//     let mut network = create_network(station, edge, train, deliveries);
+//     network.calculate_shortest_distance_between_packages();
+//     network.simulate();
+//     network.print_history();
+// }
+
 fn main() {
     let (station, edge, deliveries, train) = get_input();
     let mut network = create_network(station, edge, train, deliveries);

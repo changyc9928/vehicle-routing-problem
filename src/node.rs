@@ -14,6 +14,7 @@ pub struct Node {
     drop_off_package: HashSet<String>,
     train_here: HashMap<String, Arc<Mutex<Train>>>,
     shortest_path_to_other_critical_nodes: Vec<ShortestPathToCritical>,
+    critical: bool,
 }
 
 impl Debug for Node {
@@ -89,6 +90,7 @@ impl Node {
             drop_off_package: HashSet::new(),
             train_here: HashMap::new(),
             shortest_path_to_other_critical_nodes: vec![],
+            critical: false,
         }
     }
 
@@ -113,21 +115,25 @@ impl Node {
     pub fn add_pick_up_package(&mut self, package: Arc<Mutex<Package>>) {
         self.pick_up_package
             .insert(package.lock().unwrap().get_name(), package.clone());
+        self.critical = true;
     }
 
     pub fn add_drop_off_package(&mut self, package_name: String) {
         self.drop_off_package.insert(package_name);
+        self.critical = true;
     }
 
     pub fn add_train(&mut self, train: Arc<Mutex<Train>>) {
         self.train_here
             .insert(train.lock().unwrap().get_name(), train.clone());
+        self.critical = true;
     }
 
     pub fn is_critical(&self) -> bool {
-        !self.pick_up_package.is_empty()
-            || !self.drop_off_package.is_empty()
-            || !self.train_here.is_empty()
+        // !self.pick_up_package.is_empty()
+        //     || !self.drop_off_package.is_empty()
+        //     || !self.train_here.is_empty()
+        self.critical
     }
 
     pub fn add_shortest_path(

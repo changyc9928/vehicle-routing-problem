@@ -27,6 +27,7 @@ impl Debug for Train {
             .field("Package", &self.package.keys())
             .field("Location", &self.location)
             .field("Time travelled", &self.time)
+            .field("End", &self.end_trip)
             .finish()
     }
 }
@@ -137,10 +138,7 @@ impl Train {
                 let len = self.history.len();
                 let mut package_to_be_unload: Vec<Arc<Mutex<Package>>> = vec![];
                 let cur_node_name = current_node.lock().unwrap().get_name();
-                let mut reach_critical_node = false;
-                if time == 0 {
-                    reach_critical_node = true;
-                }
+                let reach_critical_node = current_node.lock().unwrap().is_critical();
                 for package in self.package.values() {
                     let end_node_name = package
                         .lock()
@@ -161,7 +159,6 @@ impl Train {
                     current_node.lock().unwrap().add_pick_up_package(p.clone());
                     p.lock().unwrap().arrive();
                     drop_package_name.push(pkg_name);
-                    reach_critical_node = true;
                 }
                 if len >= 2 {
                     self.history[len - 2]
@@ -180,7 +177,6 @@ impl Train {
                         self.load += weight;
                         new_package_name.push(p.lock().unwrap().get_name());
                     }
-                    reach_critical_node = true;
                 }
                 self.history[len - 1].register_departure(cur_node_name, new_package_name);
                 if reach_critical_node {
