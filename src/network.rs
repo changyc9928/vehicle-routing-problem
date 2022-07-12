@@ -12,12 +12,15 @@ use crate::{
     train::{History, Location, Train},
 };
 
+/// This is a struct to hold the hashmap to every instance contained in itself
+/// Hashmap data structure allows O(1) time of searching for any instance
 #[derive(Clone, Debug)]
 pub struct Network {
     node: HashMap<String, Arc<Mutex<Node>>>,
     edge: HashMap<String, Arc<Mutex<Edge>>>,
     train: HashMap<String, Arc<Mutex<Train>>>,
     package: HashMap<String, Arc<Mutex<Package>>>,
+    /// The overall time simulated in this network instance
     time: u64,
 }
 
@@ -32,6 +35,7 @@ impl Network {
         }
     }
 
+    /// Function to register new nodes in this network graph
     pub fn initialize_node(&mut self, n: Vec<Node>) {
         let mut nodes = HashMap::new();
         for node in n {
@@ -44,6 +48,8 @@ impl Network {
         self.node.get(&name).unwrap().clone()
     }
 
+    /// Function to register new edges in this network graph
+    /// The start node of the edges will also registering this edge in it
     pub fn initialize_edge(&mut self, e: Vec<Edge>) {
         let mut edges = HashMap::new();
         for edge in e {
@@ -59,6 +65,8 @@ impl Network {
         self.edge.get(&name).unwrap().clone()
     }
 
+    /// Function to register new trains in this network graph
+    /// The initial location node of the train will also register the respective train
     pub fn initialize_train(&mut self, t: Vec<Train>) {
         let mut trains = HashMap::new();
         for train in t {
@@ -78,6 +86,8 @@ impl Network {
         self.train.get(&name).unwrap().clone()
     }
 
+    /// Function to register new packages in this network graph
+    /// The nodes at which it is alocated and will be dropped at will be registered by this package as well
     pub fn initialize_package(&mut self, p: Vec<Package>) {
         let mut packages = HashMap::new();
         for package in p {
@@ -99,6 +109,8 @@ impl Network {
         self.package.get(&name).unwrap().clone()
     }
 
+    /// Normal Dijkstra's Shortest Path Algorithm
+    /// Implemented using Fibonacci Heap for faster calculation
     pub fn dijkstra(
         &self,
         source: Arc<Mutex<Node>>,
@@ -115,6 +127,7 @@ impl Network {
             node: source_name.clone(),
         });
 
+        // Initialize all the nodes to infinite distance in the Fib Heap
         for v in self.node.values() {
             let v_name = v.lock().unwrap().get_name();
             if v_name != source_name {
@@ -148,6 +161,9 @@ impl Network {
                 {
                     distance.insert(neighbour_node_name.clone(), new_distance);
                     prev.insert(neighbour_node_name.clone(), Some(start_node_name.clone()));
+                    // Add the new node with shorter distance
+                    // Actually it should be implemented as decreasing its priority but this Fib Heap library doesn't support the operation
+                    // So the workaround is to introduce a new visited Set to skip the nodes which are already visited
                     priority_queue.push(DistanceToSource {
                         distance: new_distance,
                         node: neighbour_node_name,
@@ -159,6 +175,8 @@ impl Network {
         return (distance, prev);
     }
 
+    /// Function to calculate all the shortest path between initial train location, package pick up point and drop off point
+    /// Using the Dijkstra's Algorithm above
     pub fn calculate_shortest_distance_between_packages(&self) {
         for p in self.package.values() {
             let source = p.lock().unwrap().get_end_node();
@@ -196,6 +214,8 @@ impl Network {
         }
     }
 
+    /// Function to check whether all package has been delivered to the destination
+    /// Used to stop the simulation once all of them has been delivered
     fn has_all_package_delivered(&self) -> bool {
         for p in self.package.values() {
             if !p.lock().unwrap().get_arrived() {
@@ -205,6 +225,9 @@ impl Network {
         return true;
     }
 
+    /// Main function to simulate the project
+    /// The simulation is broken into 1 unit of time for each loop
+    /// All the train will be finding the shortest critical nodes if it is on another critical node
     pub fn simulate(&mut self) {
         while !self.has_all_package_delivered() {
             for t in self.train.values() {
@@ -218,6 +241,7 @@ impl Network {
         }
     }
 
+    /// Function to output the simulation history as shown in the assignment description
     pub fn print_history(&self) {
         let mut history = self
             .train
@@ -232,6 +256,7 @@ impl Network {
     }
 }
 
+/// A special structure used to hold the distance-node information in the Fib Heap
 struct DistanceToSource {
     distance: i64,
     node: String,

@@ -5,6 +5,7 @@ use std::{
 
 use crate::node::Node;
 
+/// A package structure
 pub struct Package {
     name: String,
     weight: u64,
@@ -64,6 +65,7 @@ impl Package {
         self.arrived
     }
 
+    /// Function to set the package as delivered
     pub fn arrive(&mut self) {
         self.arrived = true;
     }

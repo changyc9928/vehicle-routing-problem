@@ -6,6 +6,7 @@ use std::sync::{Arc, Mutex};
 use crate::train::Train;
 use crate::{edge::Edge, package::Package};
 
+/// The node structure
 #[derive(Clone)]
 pub struct Node {
     name: String,
@@ -14,6 +15,8 @@ pub struct Node {
     drop_off_package: HashSet<String>,
     train_here: HashMap<String, Arc<Mutex<Train>>>,
     shortest_path_to_other_critical_nodes: Vec<ShortestPathToCritical>,
+    /// Critical node is defined as whether it is the initial position for a train
+    /// or the pick up/drop off point of a package
     critical: bool,
 }
 
@@ -98,6 +101,7 @@ impl Node {
         self.name.clone()
     }
 
+    /// Function to find all the direct neighbour nodes to this node
     pub fn get_neighbours(&self) -> Vec<(Arc<Mutex<Node>>, i64)> {
         let mut ret = vec![];
         for edge in &self.edge {
@@ -150,6 +154,8 @@ impl Node {
             });
     }
 
+    /// Function to sort the calculated shortest distance to all other critical nodes
+    /// we need this because the train will loop for all shortest path and break earlier once there is a valid one
     pub fn sort_shortest_dest(&mut self) {
         self.shortest_path_to_other_critical_nodes.sort_unstable();
     }
@@ -170,10 +176,12 @@ impl Node {
         self.pick_up_package.remove(&package);
     }
 
-    pub fn contain_package(&self, name: String) -> bool {
-        self.pick_up_package.contains_key(&name)
-    }
+    // /// Function to check whether current node contain the target package
+    // pub fn contain_package(&self, name: String) -> bool {
+    //     self.pick_up_package.contains_key(&name)
+    // }
 
+    /// Function to return a list of packages which will be dropped here
     pub fn get_drop_off(&self) -> Vec<String> {
         self.drop_off_package
             .clone()
@@ -181,6 +189,7 @@ impl Node {
             .collect::<Vec<String>>()
     }
 
+    /// Function to search for an edge based on the next node
     pub fn get_edge(&self, dest: String) -> Arc<Mutex<Edge>> {
         for e in self.edge.values() {
             if e.lock().unwrap().get_end_node().lock().unwrap().get_name() == dest {
@@ -191,10 +200,12 @@ impl Node {
     }
 }
 
+/// A special structure to hold the information between all critical nodes
 #[derive(Clone)]
 pub struct ShortestPathToCritical {
     pub distance_to_destination: i64,
     pub destination: Arc<Mutex<Node>>,
+    /// A dictionary to guide the train to reach the distination node
     pub path: HashMap<String, Option<String>>,
 }
 

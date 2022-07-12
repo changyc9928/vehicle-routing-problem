@@ -12,6 +12,7 @@ pub mod node;
 pub mod package;
 pub mod train;
 
+// Function to get the input from terminal interactively
 fn get_input() -> (Vec<String>, Vec<String>, Vec<String>, Vec<String>) {
     let mut input_string = String::new();
     print!("Number of stations: ");
@@ -127,6 +128,7 @@ fn get_input() -> (Vec<String>, Vec<String>, Vec<String>, Vec<String>) {
     (node, edge, package, trains)
 }
 
+// Function to parse the input array of string to create a new network instance
 fn create_network(
     node: Vec<String>,
     edge: Vec<String>,
@@ -284,6 +286,7 @@ fn create_network(
 //     network.print_history();
 // }
 
+// Main function to run the project
 fn main() {
     let (station, edge, deliveries, train) = get_input();
     let mut network = create_network(station, edge, train, deliveries);

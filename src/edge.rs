@@ -5,6 +5,7 @@ use std::{
 
 use crate::node::Node;
 
+/// The edge structure which connects 2 nodes
 #[derive(Clone)]
 pub struct Edge {
     name: String,
