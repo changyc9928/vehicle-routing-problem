@@ -150,6 +150,10 @@ impl Network {
             visited.insert(start_node_name.clone());
 
             for neighbour in start_node.lock().unwrap().get_neighbours() {
+                // The node is unreachable from other part of graph
+                if *distance.get(&start_node_name).unwrap() == i64::MAX {
+                    continue;
+                }
                 let new_distance = distance.get(&start_node_name).unwrap() + neighbour.1;
                 let neighbour_node_name = neighbour.0.lock().unwrap().get_name();
                 if visited.contains(&neighbour_node_name) {
@@ -171,6 +175,10 @@ impl Network {
                 }
             }
         }
+
+        // for d in distance.clone().into_iter() {
+        //     distance.remove(&d.0);
+        // }
 
         return (distance, prev);
     }
@@ -230,14 +238,22 @@ impl Network {
     /// All the train will be finding the shortest critical nodes if it is on another critical node
     pub fn simulate(&mut self) {
         while !self.has_all_package_delivered() {
+            let mut all_train_stopped = true;
             for t in self.train.values() {
                 let end = t.lock().unwrap().is_not_end();
                 if !end {
                     t.lock().unwrap().deliver(self.time);
+                    all_train_stopped = false;
                 }
             }
             self.time += 1;
             // println!("{:#?}", self);
+            if all_train_stopped {
+                if !self.has_all_package_delivered() {
+                    println!("Some packages are not reachable");
+                }
+                break;
+            }
         }
     }
 

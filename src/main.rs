@@ -207,7 +207,7 @@ fn create_network(
 
 // fn main() {
 //     let station = vec![
-//         "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R",
+//         "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T"
 //     ]
 //     .into_iter()
 //     .map(|x| x.to_string())
@@ -235,6 +235,7 @@ fn create_network(
 //         "E20,Q,R,22",
 //         "E21,M,N,10",
 //         "E22,H,L,15",
+//         "E33,S,T,10"
 //     ]
 //     .into_iter()
 //     .map(|x| x.to_string())
@@ -246,11 +247,14 @@ fn create_network(
 //         "K4,15,H,Q",
 //         "K5,10,K,H",
 //         "K6,3,F,F",
+//         "K7,4,R,F",
+//         "K8,4,T,S",
+//         "K9,4,S,S",
 //     ]
 //     .into_iter()
 //     .map(|x| x.to_string())
 //     .collect();
-//     let train = vec!["Q1,6,B", "Q2,20,Q", "Q3,15,J"]
+//     let train = vec!["Q1,6,B", "Q2,20,J", "Q3,15,J", "Q4,9,Q", "Q5,9,Q", "Q6,9,S"]
 //         .into_iter()
 //         .map(|x| x.to_string())
 //         .collect();
@@ -258,6 +262,7 @@ fn create_network(
 //     network.calculate_shortest_distance_between_packages();
 //     network.simulate();
 //     network.print_history();
+//     // println!("{:#?}", network);
 // }
 
 // fn main() {
@@ -272,7 +277,7 @@ fn create_network(
 //     .into_iter()
 //     .map(|x| x.to_string())
 //     .collect();
-//     let deliveries = vec!["K1,5,E,A", "K2,5,B,F"]
+//     let deliveries = vec!["K1,5,E,A", "K2,5,B,F", "K3,10,B,C"]
 //         .into_iter()
 //         .map(|x| x.to_string())
 //         .collect();

@@ -224,7 +224,7 @@ impl Train {
         // Move to the next node based on the dictionary it holds
         let curr_name = current_node.lock().unwrap().get_name();
         let next_node = self.route.get(&curr_name);
-        if let Some(node) = next_node {
+        if let Some(Some(node)) = next_node {
             // println!(
             //     "W={}, T={}, N1={}, P1={}, N2={}, P2={}",
             //     time,
@@ -235,12 +235,7 @@ impl Train {
             //     ""
             // );
             self.time += 1;
-            self.location = Location::Edge(
-                current_node
-                    .lock()
-                    .unwrap()
-                    .get_edge(node.as_ref().unwrap().to_string()),
-            );
+            self.location = Location::Edge(current_node.lock().unwrap().get_edge(node.to_string()));
         } else {
             // If there is no node to go, delete the current history entry because it has no destination
             self.history.remove(self.history.len() - 1);
