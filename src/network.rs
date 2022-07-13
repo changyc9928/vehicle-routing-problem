@@ -250,7 +250,7 @@ impl Network {
             // println!("{:#?}", self);
             if all_train_stopped {
                 if !self.has_all_package_delivered() {
-                    println!("Some packages are not reachable");
+                    panic!("Some packages are not reachable");
                 }
                 break;
             }
